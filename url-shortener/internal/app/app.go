@@ -51,6 +51,7 @@ func Run(env string) {
 		r.Post("/", urlHandler.CreateURL)
 	})
 	r.Get("/{url}", urlHandler.Redirect)
+	r.Delete("/{url}", urlHandler.DeleteByURL)
 
 	server := http.Server{
 		Addr:         cfg.HTTP.Port,

@@ -12,6 +12,7 @@ type urlRepository interface {
 	Create(url *models.URL) error
 	GetByURL(url string) (*models.URL, error)
 	GetByAddress(address string) (*models.URL, error)
+	DeleteByURL(url string) error
 }
 
 type urlService struct {
@@ -61,4 +62,8 @@ func (s *urlService) generateUniqueURL() (string, error) {
 		}
 	}
 	return "", fmt.Errorf("failed to generate unique URL after %d attempts", maxAttempts)
+}
+
+func (s *urlService) DeleteByURL(url string) error {
+	return s.urlRepository.DeleteByURL(url)
 }

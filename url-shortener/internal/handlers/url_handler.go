@@ -14,6 +14,7 @@ import (
 type urlService interface {
 	Create(address string) (string, error)
 	GetByURL(url string) (*models.URL, error)
+	DeleteByURL(url string) error
 }
 
 type urlHandler struct {
@@ -70,4 +71,18 @@ func (h *urlHandler) Redirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, model.Address, http.StatusTemporaryRedirect)
+}
+
+func (h *urlHandler) DeleteByURL(w http.ResponseWriter, r *http.Request) {
+	url := chi.URLParam(r, "url")
+
+	err := h.service.DeleteByURL(url)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			render.Status(r, http.StatusNotFound)
+			return
+		}
+		render.Status(r, http.StatusInternalServerError)
+	}
+	render.Status(r, http.StatusOK)
 }
